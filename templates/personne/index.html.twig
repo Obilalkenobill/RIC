@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PersonneController!{% endblock %}
+
+{% block body %}
+<table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Login</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Salt</th>
+            <th>Is Active</th>
+            <th>Image Verif</th>
+            <th>Recto carte</th>
+            <th>Verso carte</th>
+            {# <th>Creation Date</th> #}
+        </tr>
+        </thead>
+    <tbody>
+    {% for personne in personnes %}
+        <tr>
+            <td>{{  personne.id }}</td>
+            <td>{{  personne.nom }} </td>
+            <td>{{  personne.prenom }}</td>
+            <td>{{  personne.login }}</td>
+            <td>{{  personne.email }}</td>
+            <td>{{  personne.password }}</td>
+            <td>{{  personne.salt }}</td>
+            <td>{{  personne.isActive }}</td>
+              {% if personne.photoverif != null %}
+            <td><img style="height: 75px;width: auto" src="data:{{ personne.MimeTypephotoverif }};base64,{{ personne.photoverif64 }}" alt=""></td>
+            {% else %}
+                <td>Pas d'image</td>
+            {% endif %}
+
+                       {% if personne.rectocarteid != null %}
+            <td><img style="height: 75px;width: auto" src="data:{{ personne.MimeTyperectocarteid }};base64,{{ personne.rectocarteid64 }}" alt=""></td>
+            {% else %}
+                <td>Pas d'image</td>
+            {% endif %}
+
+                       {% if personne.versocarteid != null %}
+            <td><img style="height: 75px;width: auto" src="data:{{ personne.MimeTypeversocarteid }};base64,{{ personne.versocarteid64 }}" alt=""></td>
+            {% else %}
+                <td>Pas d'image</td>
+            {% endif %}
+            {# <td>{{  personne.creationDate.format('d/m/Y h:i:s') }}</td> #}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
