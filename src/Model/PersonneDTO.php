@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use App\Entity\Personne;
+use Doctrine\DBAL\Types\BigIntType;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class PersonneDTO
@@ -127,12 +128,7 @@ class PersonneDTO
      * @Assert\NotBlank ()
      */
     private string $password;
-    /**
-     * @Assert\NotBlank ()
-     * @Assert\Positive()
-     * @Assert\Range(min=00000000000,max=99999999999)
-     */
-    private int $nn;
+
     /**
      * @return Personne
      */
@@ -143,11 +139,17 @@ class PersonneDTO
             ->setPrenom($this->prenom)
             ->setLogin($this->login)
             ->setEmail($this->email)
-            ->setNN($this->nn);
+            ->setnn($this->nn)
+            ;
         return $personne;
     }
 
-
+    /**
+     * @Assert\NotBlank ()
+     * @Assert\Positive()
+     * @Assert\Range(min=00000000000,max=99999999999)
+     */
+    private float $nn;
 
     /**
      * Get the value of nn
@@ -168,49 +170,52 @@ class PersonneDTO
 
         return $this;
     }
+
+
+
     
-        /**
-     * @Assert\Type(type="blob", nullable=true)
-     */
-    private $photoverif;
+    //     /**
+    //  * @Assert\Type(type="blob", nullable=true)
+    //  */
+    // private $photoverif;
 
-    /**
-     * @ORM\Column (nullable=true, type="string")
-     */
-    private $mimeTypephotoverif;
-       /**
-      * @var UploadedFile
-      * @Assert\File(mimeTypes= {"image/jpeg","image/jpg","image/png"}, maxSize="20000000" )
-      */
-      private $filephotoverif;
-     /**
-     * @Assert\Type(type="blob", nullable=true)
-     */
-    private $rectocarteid;
+    // /**
+    //  * @ORM\Column (nullable=true, type="string")
+    //  */
+    // private $mimeTypephotoverif;
+    //    /**
+    //   * @var UploadedFile
+    //   * @Assert\File(mimeTypes= {"image/jpeg","image/jpg","image/png"}, maxSize="20000000" )
+    //   */
+    //   private $filephotoverif;
+    //  /**
+    //  * @Assert\Type(type="blob", nullable=true)
+    //  */
+    // private $rectocarteid;
 
-    /**
-     * @ORM\Column (nullable=true, type="string")
-     */
-    private $mimeTyperectocarteid;
+    // /**
+    //  * @ORM\Column (nullable=true, type="string")
+    //  */
+    // private $mimeTyperectocarteid;
 
-      /**
-     * @var UploadedFile
-     * @Assert\File(mimeTypes= {"image/jpeg","image/jpg","image/png"}, maxSize="20000000" )
-     */
-    private $filerectocarteid;
-    /**
-     * @Assert\Type(type="blob", nullable=true)
-     */
-    private $versocarteid;
+    //   /**
+    //  * @var UploadedFile
+    //  * @Assert\File(mimeTypes= {"image/jpeg","image/jpg","image/png"}, maxSize="20000000" )
+    //  */
+    // private $filerectocarteid;
+    // /**
+    //  * @Assert\Type(type="blob", nullable=true)
+    //  */
+    // private $versocarteid;
 
-    /**
-     * @ORM\Column (nullable=true, type="string")
-     */
-    private $mimeTypeversocarteid;
+    // /**
+    //  * @ORM\Column (nullable=true, type="string")
+    //  */
+    // private $mimeTypeversocarteid;
 
-      /**
-     * @var UploadedFile
-     * @Assert\File(mimeTypes= {"image/jpeg","image/jpg","image/png"}, maxSize="20000000" )
-     */
-    private $fileversocarteid;
+    //   /**
+    //  * @var UploadedFile
+    //  * @Assert\File(mimeTypes= {"image/jpeg","image/jpg","image/png"}, maxSize="20000000" )
+    //  */
+    // private $fileversocarteid;
 }

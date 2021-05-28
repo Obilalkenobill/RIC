@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Personne;
 use App\Entity\RolePers;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -47,4 +48,29 @@ class RolePersRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function deleteRoleUser(RolePers $role_pers): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $personne_id=$role_pers->getPersonneId()->getId();
+        $role_id=$role_pers->getRoleId()->getId();
+        $sql = '
+          DELETE FROM role_pers WHERE personne_id_id='.$personne_id.' and role_id_id='.$role_id;
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAllAssociative();
+    }
+    public function deleteUserRoleUser(Personne $personne): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $personne_id=$personne->getId();
+        $sql = '
+          DELETE FROM role_pers WHERE personne_id_id='.$personne_id;
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAllAssociative();
+    }
 }

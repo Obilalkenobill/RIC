@@ -3,11 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Personne;
+use App\Entity\Role;
+use App\Entity\RolePers;
 use App\Model\PersonneDTO;
 use FOS\RestBundle\View\View;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -15,7 +16,11 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use App\Repository\PersonneRepository
+use App\Repository\PersonneRepository;
+use App\Repository\RolePersRepository;
+use App\Repository\RoleRepository;
+use Exception;
+use Symfony\Component\HttpFoundation\Response;
 
 class PersonneController extends AbstractFOSRestController
 {
@@ -38,28 +43,77 @@ class PersonneController extends AbstractFOSRestController
 
         return $response;
     }
-    /**
-     * @Route("/api/personne", name="personne")
-     * @Rest\View()
-     * @return View
-     */
-    public function index()
-    {
-        $repo=$this->getDoctrine()->getRepository(Personne::class);
-        $personnes=$repo->findAll();
-        return $this->render('personne/index.html.twig', [
-            'personnes' => $personnes,
-        ]);
-        // return $this->view(["personnes" => $personnes], 200);
-    }
-
+    
     /**
      * @Rest\Get(path="/api/personne", name="personne_getall")
+     * @Rest\View()
+     * @return View
      */
     public function getAll(PersonneRepository $repo)
     {
         return $this->view([
             "Personnes"=>$repo->findAll()
+         ]);
+    }
+
+      /**
+     * @Rest\Get(path="/api/users/name/{login}", name="personne_getbylogin")
+     */
+    public function getbyLogin($login)
+    {
+        $personneRepo=$this->getDoctrine()->getRepository(Personne::class);
+        $personne=$personneRepo->findOneBy(['login' => $login]);
+        return $this->view([
+            $personne
+         ]);
+    }
+    /**
+     * @Rest\Get(path="/api/users/email/{email}", name="personne_getbyemail")
+     */
+    public function getbyEmail($email)
+    {
+        $personneRepo=$this->getDoctrine()->getRepository(Personne::class);
+        $personne=$personneRepo->findOneBy(['email' => $email]);
+        return $this->view([
+            $personne
+         ]);
+    }
+    /**
+     * @Rest\Get(path="/api/users/id/{personne}", name="personne_getID")
+     */
+     public function getbyId(Personne $personne)
+     {
+        //  $personneRepo=$this->getDoctrine()->getRepository(Personne::class);
+        //  $personne=$personneRepo->findOneBy(['id' => $id]);
+         return $this->view([
+             $personne
+          ]);
+     }
+         /**
+     * @Rest\Delete(path="/api/users/delete/{personne}", name="delete_personne_getID")
+     */
+    public function deleteUser(Personne $personne, RolePersRepository $repoRolePers)
+    {
+       //  $personneRepo=$this->getDoctrine()->getRepository(Personne::class);
+       //  $personne=$personneRepo->findOneBy(['id' => $id]);
+       $repoRolePers->deleteUserRoleUser($personne);
+       $em = $this->getDoctrine()->getManager();
+       $em->remove($personne);
+       $em->flush(); 
+       
+       return $this->view([
+           'deleted',Response::HTTP_ACCEPTED
+         ]);
+    }
+         /**
+     * @Rest\Get(path="/api/users/nn/{nn}", name="personne_getbyNN")
+     */
+    public function getbynn($nn)
+    {
+        $personneRepo=$this->getDoctrine()->getRepository(Personne::class);
+        $personne=$personneRepo->findOneBy(['nn' => $nn]);
+        return $this->view([
+            $personne
          ]);
     }
     /**
@@ -75,10 +129,15 @@ class PersonneController extends AbstractFOSRestController
         //     return $this->view(["errors" => $violations]);
         // }
     //    dump($req->files->get('filephotoverif'));
+       try{
        $filephotoverif=$req->files->get('filephotoverif');
        $filerectocarteid=$req->files->get('filerectocarteid');
        $fileversocarteid=$req->files->get('fileversocarteid');
-       
+       }
+       catch(Exception $ex)
+       {
+           dump($ex);
+       }
         if( $filephotoverif!=null ){
             $bin=file_get_contents($filephotoverif->getPathname());
             $personne->setphotoverif($bin);

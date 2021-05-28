@@ -14,12 +14,16 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        personne:
-            pattern: ^/api/personne
-            stateless: true
-            anonymous: true
         register:
             pattern: ^/api/register
+            stateless: true
+            anonymous: true
+        findByEmail:
+            pattern: ^/api/users/email/
+            stateless: true
+            anonymous: true
+        findByLogin:
+            pattern: ^/api/users/name/
             stateless: true
             anonymous: true
         activate:
@@ -27,7 +31,7 @@ security:
             stateless: true
             anonymous: true
         login:
-            pattern: ^/api/login
+            pattern: ^/api/login_check
             stateless: true
             anonymous: true
             json_login:
@@ -59,7 +63,9 @@ security:
         - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/activate, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/personne, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/users/email/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/users/name/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
     role_hierarchy:

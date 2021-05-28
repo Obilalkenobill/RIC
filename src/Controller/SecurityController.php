@@ -23,27 +23,12 @@ use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 class SecurityController extends AbstractFOSRestController
 {
-//    public $serializer ;
-//    public $container;
-//    public function __construct (ContainerInterface $container)
-//    {
-//        $this->serializer   = new Serializer(
-//            [new GetSetMethodNormalizer(), new ArrayDenormalizer()],
-//            [new JsonEncoder()]
-//        );
-//        $this->container=$container;
-//    }
-    /**
-     * @Rest\Post(path="/api/login_check", name="api_login")
-     */
-    public function loginCheckAction() {
-        $user = $this->getUser();
-        return new JsonResponse(["username" => $user->getUsername(), "roles" => $user->getRoles()]);
-    }
+
     /**
      * @Route("api/login", name="app_login")
      */
@@ -81,14 +66,15 @@ class SecurityController extends AbstractFOSRestController
             $em = $this->getDoctrine()->getManager();
             $em->persist($personne);
             $em->flush();
-            return $this->redirectToRoute('app_login');
+            //RedirectResponse
+            return $this->redirect("http://localhost:4200/");
         }
-        return $this->redirectToRoute('home');
+        return $this->redirect("http://localhost:4200/");
 
     }
 
     /**
-     * @Route("/api/register", name="app_register")
+     * @Rest\Post("/api/register", name="app_register")
      * @Rest\View()
      * @ParamConverter("dto",converter="fos_rest.request_body")
      */
@@ -102,6 +88,7 @@ class SecurityController extends AbstractFOSRestController
         $encoded = $encoder->encodePassword($personne, $personne->getPassword());
         $personne->setPassword($encoded);
         $personne->setIsActive(false);
+        $personne->setIsVerified(false);
         $em = $this->getDoctrine()->getManager();
         $em->persist($personne);
         $em->flush();
@@ -113,51 +100,4 @@ class SecurityController extends AbstractFOSRestController
         $mailer->send($email);
         return $this->view(["personne"=> $personne],Response::HTTP_CREATED);
     }
-//        dump("TU PASSERAS PAR LA");
-//        if ($req->getContentType() == 'json') {
-//            dump("TU PASSERA PAR JSON");
-//            $personne = $this->serializer->deserialize($req->getContent(),'App\Entity\Personne','json');
-//            try{
-//                $salt=uniqid();
-//                $personne->setSalt($salt);
-//                $em = $this->getDoctrine()->getManager();
-//                $em->persist($personne);
-//                $em->flush();
-//            }
-//            catch (\Exception $exception){
-//                return Response ();
-//            }
-//            return new Response();
-//        } else {
-//            dump("TU PASSERA PAR FORM");
-//            $personne = new Personne();
-//            $form = $this->createForm(RegisterType::class, $personne);
-//            $form->handleRequest($req);
-//            if ($form->isSubmitted() && $form->isValid()) {
-//                $salt=uniqid();
-//                $personne->setSalt($salt);
-//                $personne->setIsActive(false);
-//                dump($personne);
-//                $encoded = $encoder->encodePassword($personne, $personne->getPassword());
-//                $personne->setPassword($encoded);
-////            $personne->setSalt(uniqid());
-//                //les roles doivent commencer par ROLE_
-//                $em = $this->getDoctrine()->getManager();
-//                $em->persist($personne);
-//                $em->flush();
-//            $email=new Email() ;
-//            $email->to($personne->getEmail());
-//            $email->subject('Bienvenue sur le site du referendum à initiative citoyen');
-//            $email->html('<div><a href="https://localhost:8000/activate/'.$personne->getSalt().'/'.$personne->getId().'">Veuillez cliquer sur ce lien pour activer votre compte </a></div>');
-//            $email->from("arbreplantebuisson@gmail.com");
-//            $mailer->send($email);
-//            $this->addFlash('success','enregistrement OK');
-//                $this->redirectToRoute('home');
-//            }
-//            return $this->render('security/register.html.twig', [
-//                'form' => $form->createView()
-//            ]);
-//        }
-        //hashage pas d'inversion possible vs cryptage inversion possible()
-        //password toujours hashé
 }

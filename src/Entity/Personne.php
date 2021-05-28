@@ -41,10 +41,7 @@ class Personne implements UserInterface
      * @ORM\Column(type="string", length=50, unique=true)
      */
     private $email;
-   /**
-     * @ORM\Column(type="integer", unique=true)
-     */
-    private $nn;
+
     /**
      * @ORM\Column(type="string", length=255)
      */
@@ -137,16 +134,41 @@ class Personne implements UserInterface
     private $salt;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true, options={"default" : 0})
+     * @ORM\Column(type="integer", nullable=true, options={"default" : 0})
+     * @Assert\Range(min = 0, max = 1)
      */
 
     private $isActive;
- /**
-     * @ORM\Column(type="boolean", nullable=true, options={"default" : 0})
+    /**
+     * @ORM\Column(type="integer", nullable=true, options={"default" : 0})
+     * @Assert\Range(min = 0,max = 1)
      */
 
     private $isVerified;
+   /**
+     * @ORM\Column(type="bigint", unique=true)
+     */
+    private $nn;
 
+    /**
+     * Get the value of nn
+     */ 
+    public function getnn()
+    {
+        return $this->nn;
+    }
+
+    /**
+     * Set the value of nn
+     *
+     * @return  self
+     */ 
+    public function setnn($nn)
+    {
+        $this->nn = $nn;
+
+        return $this;
+    }
         /**
      * @ORM\Column(type="blob", nullable=true)
      */
@@ -706,25 +728,6 @@ class Personne implements UserInterface
         return $this;
     }
 
-    /**
-     * Get the value of nn
-     */ 
-    public function getnn()
-    {
-        return $this->nn;
-    }
-
-    /**
-     * Set the value of nn
-     *
-     * @return  self
-     */ 
-    public function setnn($nn)
-    {
-        $this->nn = $nn;
-
-        return $this;
-    }
 
     /**
      * Get the value of isVerified
