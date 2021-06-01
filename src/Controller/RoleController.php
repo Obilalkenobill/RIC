@@ -90,6 +90,17 @@ class RoleController extends AbstractFOSRestController
      */
     public function deleteRolePers(RolePers $role_pers,RolePersRepository $roleRepo){
         dump($role_pers);
+      $roleRepo->deleteRoleUser($role_pers);
+        return $this->view(["roles"=> $role_pers],Response::HTTP_ACCEPTED);
+    }
+
+      /**
+     * @Rest\Post("/api/delete/role/role", name="appDeleteRolePersRole")
+     * @Rest\View()
+     * @ParamConverter("role_pers",converter="fos_rest.request_body")
+     */
+     public function deleteRolePersRole(RolePers $role_pers,RolePersRepository $roleRepo){
+        dump($role_pers);
       $roleRepo->deleteRole($role_pers);
         return $this->view(["roles"=> $role_pers],Response::HTTP_ACCEPTED);
     }

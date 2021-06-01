@@ -215,6 +215,12 @@ class Personne implements UserInterface
     private $fileversocarteid;
 
  
+    public function replaceBlob(){
+        $this->photoverif=$this->getphotoverif64();
+        $this->rectocarteid=$this->getrectocarteid64();
+        $this->versocarteid=$this->getversocarteid64();
+    }
+
     public function getphotoverif64(){
         //convertir un blob en base 64
         if($this->getPhotoverif()!=null){

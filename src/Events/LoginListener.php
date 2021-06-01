@@ -24,6 +24,7 @@ class LoginListener
                 {
                 $roles[]=$rolePers->getRoleId()->getLabel();
                 }
+            $payload["id"]=$user->getId();
             $payload["roles"]=$roles;
         }
 

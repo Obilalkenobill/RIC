@@ -55,6 +55,19 @@ class PersonneController extends AbstractFOSRestController
             "Personnes"=>$repo->findAll()
          ]);
     }
+      /**
+     * @Rest\Put("api/users/validate/{personne}", name="app_activationUser")
+     */
+    public function activate (Personne $personne){
+            $personne->setIsVerified(true);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($personne);
+            $em->flush();
+            //RedirectResponse
+            return $this->view([
+                $personne
+             ]);
+        }
 
       /**
      * @Rest\Get(path="/api/users/name/{login}", name="personne_getbylogin")
@@ -85,7 +98,8 @@ class PersonneController extends AbstractFOSRestController
      {
         //  $personneRepo=$this->getDoctrine()->getRepository(Personne::class);
         //  $personne=$personneRepo->findOneBy(['id' => $id]);
-         return $this->view([
+        $personne->replaceBlob();
+        return $this->view([
              $personne
           ]);
      }
@@ -130,6 +144,7 @@ class PersonneController extends AbstractFOSRestController
         // }
     //    dump($req->files->get('filephotoverif'));
        try{
+           dump($req);
        $filephotoverif=$req->files->get('filephotoverif');
        $filerectocarteid=$req->files->get('filerectocarteid');
        $fileversocarteid=$req->files->get('fileversocarteid');
@@ -139,11 +154,14 @@ class PersonneController extends AbstractFOSRestController
            dump($ex);
        }
         if( $filephotoverif!=null ){
+        dump($filephotoverif);
             $bin=file_get_contents($filephotoverif->getPathname());
             $personne->setphotoverif($bin);
             $personne->setmimeTypephotoverif($filephotoverif->getMimeType());
             $em=$this->getDoctrine()->getManager();
             $em->persist($personne);
+            $em->flush();
+            dump($personne);
         }
         if( $filerectocarteid!=null ){
             $bin=file_get_contents($filerectocarteid->getPathname());
@@ -151,6 +169,7 @@ class PersonneController extends AbstractFOSRestController
             $personne->setmimeTyperectocarteid($filerectocarteid->getMimeType());
             $em=$this->getDoctrine()->getManager();
             $em->persist($personne);
+            $em->flush();
         }
         if( $fileversocarteid!=null ){
             $bin=file_get_contents($fileversocarteid->getPathname());
