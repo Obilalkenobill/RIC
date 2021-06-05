@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Projet;
+use App\Entity\Vote;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,4 +48,57 @@ class ProjetRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function getNbreBullNull(Projet $projet): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $projet_id=$projet->getId();
+        $sql = '
+        SELECT COUNT(*)
+        FROM vote
+        WHERE projet_id='.$projet_id.' AND bull_vote is null;';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function getNbreBullPour(Projet $projet)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $projet_id=$projet->getId();
+        $sql = '
+        SELECT COUNT(*)
+        FROM vote
+        WHERE projet_id='.$projet_id.' AND bull_vote=1;';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAllAssociative();
+    }
+    public function getNbreBullContre(Projet $projet): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $projet_id=$projet->getId();
+        $sql = '
+        SELECT COUNT(*)
+        FROM vote
+        WHERE projet_id='.$projet_id.' AND bull_vote=0;';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAllAssociative();
+    }
+    public function findProjetByUserRPO($personne_id)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = '
+        SELECT *
+        FROM projet
+        WHERE personne_id_id='.$personne_id;
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAllAssociative();
+    }
 }

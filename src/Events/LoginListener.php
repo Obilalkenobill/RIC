@@ -18,13 +18,14 @@ class LoginListener
         $user = $event->getUser();
  
         if ($user instanceof Personne) {
-        dump($user);
+            dump($user);
+            $payload["is_verified"]=$user->getIsVerified();
+            $payload["id"]=$user->getId();
             $roles=[];
             foreach($user->getRolePers() as $rolePers)
                 {
                 $roles[]=$rolePers->getRoleId()->getLabel();
                 }
-            $payload["id"]=$user->getId();
             $payload["roles"]=$roles;
         }
 

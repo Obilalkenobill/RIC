@@ -7,6 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=RolePersRepository::class)
+ * @ORM\Table(
+ *    name="RolePers",
+ *    uniqueConstraints={
+ *        @ORM\UniqueConstraint(name="assignment_unique", columns={"personne_id", "role_id"})
+ *    }
+ * )
  */
 class RolePers
 {
@@ -19,13 +25,13 @@ class RolePers
 
     /**
      * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="rolePers")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="personne_id", nullable=false)
      */
     private $personne_id;
 
     /**
      * @ORM\ManyToOne(targetEntity=Role::class, inversedBy="rolePers")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="role_id", nullable=false)
      */
     private $role_id;
 

@@ -30,18 +30,18 @@ class Vote
     private $projet_id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="votes")
+     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="votes", cascade={"persist"})
      * @ORM\JoinColumn(name="personne_id", nullable=false)
      */
     private $personne_id;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $bull_vote;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="integer")
      */
     private $a_vote;
 
