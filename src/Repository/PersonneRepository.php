@@ -34,6 +34,26 @@ class PersonneRepository extends ServiceEntityRepository
         // returns an array of arrays (i.e. a raw data set)
         return $stmt->fetchAllAssociative();
     }
+
+    public function setROLE_USERtoUserID($UserID){
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = '
+           SELECT id FROM role WHERE label="ROLE_USER"
+            ';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        // returns an array of arrays (i.e. a raw data set)
+        $role_id=$stmt->fetchAllAssociative();
+        dump($role_id[0]["id"]);
+        $role_id=$role_id[0]["id"];
+        $sql = '
+        INSERT INTO rolepers (personne_id,role_id) values('.$UserID.','.$role_id.');
+         ';
+     $stmt = $conn->prepare($sql);
+     $stmt->execute();
+    }
     // /**
     //  * @return Personne[] Returns an array of Personne objects
     //  */

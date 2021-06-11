@@ -90,17 +90,16 @@ class ProjetController extends AbstractFOSRestController
 
 
     /**
-     * @Rest\Delete(path="/api/users/delete/{projet}", name="delete_projet_getID")
+     * @Rest\Delete(path="/delete/{projet}", name="delete_projet_byID")
      */
-    public function deleteUser(Projet $projet, ProjetRepository $projetRepo)
+    public function deleteProjet(Projet $projet, ProjetRepository $projetRepo)
     {
        //  $personneRepo=$this->getDoctrine()->getRepository(Personne::class);
        //  $personne=$personneRepo->findOneBy(['id' => $id]);
     //    $projetRepo->deleteUserRoleUser($projet);
-       $em = $this->getDoctrine()->getManager();
-       $em->remove($projet);
-       $em->flush(); 
-       
+        $id=$projet->getId();
+        $projetRepo->deleteProjet($id);
+        
        return $this->view([
            'deleted',Response::HTTP_ACCEPTED
          ]);

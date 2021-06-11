@@ -137,7 +137,7 @@ class PersonneController extends AbstractFOSRestController
      * @param Request $req
      * @return View
      */
-    public function pathImageVerif(Request $req, EntityManagerInterface $em, Personne $personne) {
+    public function pathImageVerif(Request $req, EntityManagerInterface $em, Personne $personne, PersonneRepository $repo) {
 
         // if (sizeof($violations) > 0) {
         //     return $this->view(["errors" => $violations]);
@@ -179,6 +179,11 @@ class PersonneController extends AbstractFOSRestController
             $em->persist($personne);
             $em->flush();
         }
-        
+
+        if ($personne->getPhotoverif()!=null && $personne->getrectocarteid()!=null && $personne->getversocarteid()!=null)
+        {
+            $UserID=$personne->getId();
+            $repo->setROLE_USERtoUserID($UserID);
+        }        
     }
 }

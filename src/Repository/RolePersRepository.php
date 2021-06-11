@@ -54,7 +54,7 @@ class RolePersRepository extends ServiceEntityRepository
         $personne_id=$role_pers->getPersonneId()->getId();
         $role_id=$role_pers->getRoleId()->getId();
         $sql = '
-          DELETE FROM role_pers WHERE personne_id_id='.$personne_id.' and role_id_id='.$role_id;
+          DELETE FROM rolepers WHERE personne_id='.$personne_id.' and role_id='.$role_id;
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
@@ -66,7 +66,7 @@ class RolePersRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
         $personne_id=$personne->getId();
         $sql = '
-          DELETE FROM role_pers WHERE personne_id_id='.$personne_id;
+          DELETE FROM rolepers WHERE personne_id='.$personne_id;
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
@@ -78,7 +78,7 @@ class RolePersRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
         $role_id=$role_pers->getRoleId()->getId();
         $sql = '
-          DELETE FROM role_pers WHERE role_id_id='.$role_id.';DELETE FROM role WHERE id='.$role_id;
+          DELETE FROM rolepers WHERE role_id='.$role_id.';DELETE FROM role WHERE id='.$role_id;
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 

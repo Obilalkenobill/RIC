@@ -101,4 +101,16 @@ class ProjetRepository extends ServiceEntityRepository
         // returns an array of arrays (i.e. a raw data set)
         return $stmt->fetchAllAssociative();
     }
+
+    public function deleteProjet($id){
+
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'DELETE FROM vote WHERE projet_id='.$id.';
+        DELETE FROM projet WHERE id='.$id;
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAllAssociative();
+    }
 }
