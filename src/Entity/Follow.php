@@ -7,6 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=FollowRepository::class)
+* @ORM\Table(
+ *    name="Follow",
+ *    uniqueConstraints={
+ *        @ORM\UniqueConstraint(name="assignment_unique", columns={"personne_id_id", "projet_id_id"})
+ *    }
+ * )
  */
 class Follow
 {
@@ -18,14 +24,14 @@ class Follow
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Projet::class, inversedBy="follows")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=Projet::class, inversedBy="follows", cascade={"remove"})
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $projet_id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="follows")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="follows", cascade={"remove"})
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $personne_id;
 

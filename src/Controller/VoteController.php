@@ -50,7 +50,7 @@ class VoteController extends AbstractFOSRestController
      * @Rest\View()
      * @ParamConverter("vote",converter="fos_rest.request_body")
      */
-    public function getRoleUserBybyId(Vote $vote){
+    public function getRoleUserById(Vote $vote){
         $voteRepo=$this->getDoctrine()->getRepository(Vote::class);
         $voteReturn=$voteRepo->findOneBy(['projet_id'=>$vote->getProjetId(),'personne_id'=>$vote->getPersonneId()]);
         dump($vote);

@@ -142,7 +142,7 @@ class Projet
     private $creation_date;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="projets")
+     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="projets",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $personne_id;

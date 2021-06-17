@@ -18,7 +18,20 @@ class CommentaireRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Commentaire::class);
     }
+    public function addCommentRepo($commentaire, $personne_id,$projet_id) 
+     {
+        $conn = $this->getEntityManager()->getConnection();
+        $date=new \DateTime("now");
+        $creation_date = $date->format('Y-m-d H:i:s');
+        $sql = '
+        INSERT INTO commentaire (projet_id_id, personne_id_id, commentaire, creation_date)
+        VALUES ('.$projet_id.','.$personne_id.',"'.$commentaire.'","'.$creation_date.'");';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
 
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAllAssociative();
+    }
     // /**
     //  * @return Commentaire[] Returns an array of Commentaire objects
     //  */

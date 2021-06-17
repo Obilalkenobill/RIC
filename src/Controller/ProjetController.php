@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Commentaire;
+use App\Entity\Follow;
 use App\Entity\Personne;
 use App\Entity\Projet;
 use App\Model\ProjetDTO;
+use App\Repository\CommentaireRepository;
+use App\Repository\FollowRepository;
 use FOS\RestBundle\View\View;
 use App\Repository\ProjetRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,6 +18,7 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class ProjetController
@@ -73,6 +78,39 @@ class ProjetController extends AbstractFOSRestController
         return $this->view( [$projets]);
     }
 
+          /**
+     * @Rest\Get (path="/byFollower/{personne}",name="api_projet_getFollower")
+     * @Rest\View()
+     */
+    public function getProjetByFollower(Personne $personne, ProjetRepository $repo){
+        $personne_id=$personne->getId();
+        $projets=$repo->findProjetByFollower($personne_id);
+        dump($projets);
+        return $this->view( [$projets]);
+    }
+
+    /**
+     * @Rest\Get (path="/comment/byProjetID/{projet}",name="api_projet_getComments")
+     * @Rest\View()
+     */
+    public function getCommentByProjet(Projet $projet, ProjetRepository $repo,CommentaireRepository $repoC){
+        // $projet_id=$projet->getId();
+        // $comments=$repo->findCommentByProjetID($projet_id);
+        $comments[]=$repoC->findBy(['projet_id' => $projet]);
+        dump($comments);
+        return $this->view(["commentaires"=>$comments]);
+    }
+  /**
+     * @Rest\Post("/get/follow", name="appGetFollowByFollow")
+     * @Rest\View()
+     * @ParamConverter("follow",converter="fos_rest.request_body")
+     */
+    public function getRoleUserById(Follow $follow, FollowRepository $repo){
+        dump($follow);
+        $followReturn=$repo->findOneBy(['projet_id'=>$follow->getProjetId(),'personne_id'=>$follow->getPersonneId()]);
+        dump($followReturn);
+        return $this->view($followReturn);
+    }
 
     /**
      * @Rest\Post("/create", name="appCreateProjet")
@@ -85,7 +123,7 @@ class ProjetController extends AbstractFOSRestController
         $em = $this->getDoctrine()->getManager();
         $em->persist($projet);
         $em->flush();
-        return $this->view(["projet"=> $repo->findBy(["id"=>$projet->getId()])],Response::HTTP_CREATED);
+        return $this->view(Response::HTTP_CREATED);
     }
 
 
@@ -104,4 +142,56 @@ class ProjetController extends AbstractFOSRestController
            'deleted',Response::HTTP_ACCEPTED
          ]);
        }
+
+     /**
+     * @Rest\Post("/create/follow", name="appCreateFollow")
+     * @Rest\View()
+     * @ParamConverter("follow",converter="fos_rest.request_body")
+     */
+    public function addFollow(Follow $follow){
+        // $followbis=new Follow();
+         dump($follow);
+        // $followbis->setPersonneId($follow->getPersonneId());
+        // $followbis->setProjetId($follow->getProjetId());
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($follow);
+        $em->flush();
+        return $this->view(Response::HTTP_CREATED);
+    }
+
+        /**
+     * @Rest\Post("/create/comment", name="appCreateComment")
+     * @Rest\View()
+     * @param EntityManagerInterface $em
+     * @param Request $req
+     * @return View
+     */
+    public function addComment(Request $req, CommentaireRepository $repo){
+        dump($req);
+        $data = json_decode($req->getContent(), true);
+        $commentaire=$data["commentaire"];
+        $personne_id=$data["personne_id"];
+        $projet_id=$data["projet_id"];
+        $repo->addCommentRepo($commentaire, $personne_id,$projet_id);
+        // $followbis=new Follow();
+        // $commentaire->setCreationDate(new \DateTime("now"));
+        //  dump($commentaire);
+        // // $followbis->setPersonneId($follow->getPersonneId());
+        // // $followbis->setProjetId($follow->getProjetId());
+        // $em = $this->getDoctrine()->getManager();
+        // $em->persist($commentaire);
+        // $em->flush();
+        // return $this->view(Response::HTTP_CREATED);
+    }
+
+        /**
+     * @Rest\Post("/delete/follow", name="appDeleteFollow")
+     * @Rest\View()
+     * @ParamConverter("follow",converter="fos_rest.request_body")
+     */
+    public function unFollow(Follow $follow,ProjetRepository $repo){
+        // $followbis=new Follow();
+        $repo->deleteFollow($follow->getProjetId()->getId(),$follow->getPersonneId()->getId());
+        return $this->view(Response::HTTP_ACCEPTED);
+    }
 }

@@ -76,7 +76,7 @@ class Commentaire
     private $projet_id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="commentaires")
+     * @ORM\ManyToOne(targetEntity=Personne::class, inversedBy="commentaires",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $personne_id;
@@ -97,7 +97,7 @@ class Commentaire
     private $modif_date;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Commentaire::class, inversedBy="commentaires")
+     * @ORM\ManyToOne(targetEntity=Commentaire::class, inversedBy="commentaires",cascade={"persist"})
      */
     private $commentaire_referent_id;
 

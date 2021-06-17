@@ -102,11 +102,47 @@ class ProjetRepository extends ServiceEntityRepository
         return $stmt->fetchAllAssociative();
     }
 
+    public function findProjetByFollower($personne_id)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT *
+        FROM projet p  
+        INNER JOIN follow f  
+        ON p.id = f.projet_id_id;  
+        WHERE f.personne_id_id='.$personne_id;
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAllAssociative();
+    }
+
+   public function findCommentByProjetID($projet_id){
+    $conn = $this->getEntityManager()->getConnection();
+    $sql = 'SELECT *
+    FROM commentaire c  
+    WHERE c.projet_id_id='.$projet_id;
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    // returns an array of arrays (i.e. a raw data set)
+    return $stmt->fetchAllAssociative();
+   }
+
     public function deleteProjet($id){
 
         $conn = $this->getEntityManager()->getConnection();
-        $sql = 'DELETE FROM vote WHERE projet_id='.$id.';
+        $sql = 'DELETE FROM vote WHERE projet_id='.$id.';DELETE FROM commentaire WHERE projet_id_id='.$id.';DELETE FROM follow WHERE projet_id_id='.$id.';
         DELETE FROM projet WHERE id='.$id;
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAllAssociative();
+    }
+
+    public function deleteFollow($projet_id,$personne_id){
+
+        $conn = $this->getEntityManager()->getConnection();
+      $sql='DELETE FROM follow WHERE projet_id_id='.$projet_id.' AND personne_id_id ='.$personne_id.';';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 

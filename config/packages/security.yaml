@@ -22,6 +22,10 @@ security:
             pattern: ^/api/users/email/
             stateless: true
             anonymous: true
+        findByNN:
+            pattern: ^/api/users/nn/
+            stateless: true
+            anonymous: true
         findByLogin:
             pattern: ^/api/users/name/
             stateless: true

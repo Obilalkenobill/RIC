@@ -110,7 +110,8 @@ class PersonneController extends AbstractFOSRestController
     {
        //  $personneRepo=$this->getDoctrine()->getRepository(Personne::class);
        //  $personne=$personneRepo->findOneBy(['id' => $id]);
-       $repoRolePers->deleteUserRoleUser($personne);
+       $test=$repoRolePers->deleteAboutUser($personne);
+       dump($test);
        $em = $this->getDoctrine()->getManager();
        $em->remove($personne);
        $em->flush(); 
@@ -180,7 +181,7 @@ class PersonneController extends AbstractFOSRestController
             $em->flush();
         }
 
-        if ($personne->getPhotoverif()!=null && $personne->getrectocarteid()!=null && $personne->getversocarteid()!=null)
+        if (empty($personne->getRolePers()) && $personne->getPhotoverif()!=null && $personne->getrectocarteid()!=null && $personne->getversocarteid()!=null)
         {
             $UserID=$personne->getId();
             $repo->setROLE_USERtoUserID($UserID);

@@ -61,15 +61,21 @@ class RolePersRepository extends ServiceEntityRepository
         // returns an array of arrays (i.e. a raw data set)
         return $stmt->fetchAllAssociative();
     }
-    public function deleteUserRoleUser(Personne $personne): array
+    public function deleteAboutUser(Personne $personne): array
     {
         $conn = $this->getEntityManager()->getConnection();
         $personne_id=$personne->getId();
         $sql = '
-          DELETE FROM rolepers WHERE personne_id='.$personne_id;
+          DELETE FROM rolepers WHERE personne_id='.$personne_id.';DELETE FROM vote where personne_id='.$personne_id.';DELETE FROM follow where personne_id_id='.$personne_id;
+        dump($sql);
         $stmt = $conn->prepare($sql);
+        dump($stmt);
         $stmt->execute();
-
+        $stmt->closeCursor();
+        $sql2='DELETE FROM projet WHERE personne_id_id='.$personne_id;
+        $stmt2 = $conn->prepare($sql2);
+        dump($stmt2);
+        $stmt2->execute();
         // returns an array of arrays (i.e. a raw data set)
         return $stmt->fetchAllAssociative();
     }
