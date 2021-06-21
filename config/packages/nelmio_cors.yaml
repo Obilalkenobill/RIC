@@ -12,14 +12,14 @@ nelmio_cors:
         paths:
             '^/api/':
                 origin_regex: true
-                allow_origin: ['^http://localhost:[0-9]+']
-                allow_headers: ['*','access-control-allow-origin']
-                allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
+                allow_origin: ['*']
+                allow_headers: ['*']
+                allow_methods: ['*']
                 max_age: 3600
             '^/':
                 origin_regex: true
-                allow_origin: ['^http://localhost:[0-9]+']
-                allow_headers: ['*','access-control-allow-origin']
-                allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
+                allow_origin: ['*']
+                allow_headers: ['*']
+                allow_methods: ['*']
                 max_age: 3600
                 hosts: ['^api\.']
