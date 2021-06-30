@@ -18,7 +18,16 @@ class VoteRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Vote::class);
     }
+    public function findOneBybis($projet_id,$personne_id){
 
+        $conn = $this->getEntityManager()->getConnection();
+      $sql='SELECT * FROM vote WHERE projet_id='.$projet_id.' AND personne_id='.$personne_id.';';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $stmt->fetchAllAssociative();
+    }
     // /**
     //  * @return Vote[] Returns an array of Vote objects
     //  */

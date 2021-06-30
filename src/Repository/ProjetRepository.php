@@ -106,10 +106,7 @@ class ProjetRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = 'SELECT *
-        FROM projet p  
-        INNER JOIN follow f  
-        ON p.id = f.projet_id_id;  
-        WHERE f.personne_id_id='.$personne_id;
+        FROM projet p INNER JOIN follow f ON p.id = f.projet_id_id WHERE f.personne_id_id='.$personne_id;
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         // returns an array of arrays (i.e. a raw data set)
@@ -130,8 +127,17 @@ class ProjetRepository extends ServiceEntityRepository
     public function deleteProjet($id){
 
         $conn = $this->getEntityManager()->getConnection();
-        $sql = 'DELETE FROM vote WHERE projet_id='.$id.';DELETE FROM commentaire WHERE projet_id_id='.$id.';DELETE FROM follow WHERE projet_id_id='.$id.';
-        DELETE FROM projet WHERE id='.$id;
+        $sql = 'DELETE FROM vote WHERE projet_id='.$id.';DELETE FROM follow WHERE projet_id_id='.$id;
+ 
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $sql ='DELETE FROM commentaire WHERE commentaire_referent_id_id IS NOT NULL AND projet_id_id='.$id.';';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $sql ='DELETE FROM commentaire WHERE projet_id_id='.$id.';';
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $sql ='DELETE FROM projet WHERE id='.$id;
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
@@ -142,11 +148,42 @@ class ProjetRepository extends ServiceEntityRepository
     public function deleteFollow($projet_id,$personne_id){
 
         $conn = $this->getEntityManager()->getConnection();
-      $sql='DELETE FROM follow WHERE projet_id_id='.$projet_id.' AND personne_id_id ='.$personne_id.';';
+      $sql='DELETE FROM follow WHERE projet_id_id='.$projet_id.' AND personne_id_id='.$personne_id.';';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
         // returns an array of arrays (i.e. a raw data set)
         return $stmt->fetchAllAssociative();
+    }
+    public function findAllbis(){
+        $conn = $this->getEntityManager()->getConnection();
+        $sql='SELECT * FROM projet';
+          $stmt = $conn->prepare($sql);
+          $stmt->execute();
+  
+          // returns an array of arrays (i.e. a raw data set)
+          return $stmt->fetchAllAssociative();
+    }
+
+    public function findOneBybis($projet_ID){
+        $conn = $this->getEntityManager()->getConnection();
+        $sql='SELECT * FROM projet where id='.$projet_ID;
+          $stmt = $conn->prepare($sql);
+          $stmt->execute();
+  
+          // returns an array of arrays (i.e. a raw data set)
+          return $stmt->fetchAllAssociative();
+    }
+    
+    public function insert($titre, $descriptif,$personne_id){
+        $date=new \DateTime("now");
+        $creation_date = $date->format('Y-m-d H:i:s');
+        $conn = $this->getEntityManager()->getConnection();
+        $sql='INSERT INTO projet (descriptif,titre,personne_id_id,creation_date) VALUES ("'.$descriptif.'","'.$titre.'",'.$personne_id.',"'.$creation_date.'");';
+          $stmt = $conn->prepare($sql);
+          $stmt->execute();
+  
+          // returns an array of arrays (i.e. a raw data set)
+          return $stmt->fetchAllAssociative();
     }
 }

@@ -42,7 +42,6 @@ class RoleController extends AbstractFOSRestController
      * @ParamConverter("role_pers",converter="fos_rest.request_body")
      */
     public function setRole(RolePers $role_pers){
-        dump($role_pers);
         $em = $this->getDoctrine()->getManager();
         $em->persist($role_pers);
         $em->flush();
@@ -79,7 +78,6 @@ class RoleController extends AbstractFOSRestController
     public function getRoleUserBybyId(RolePers $role_pers){
         $roleRepo=$this->getDoctrine()->getRepository(RolePers::class);
         $rolePers=$roleRepo->findOneBy(['role_id'=>$role_pers->getRoleId(),'personne_id'=>$role_pers->getPersonneId()]);
-        dump($rolePers);
         return $this->view([$rolePers],Response::HTTP_CREATED);
       //$repo->setRole($rolePers->getPersonneId(),$rolePers->getRoleId());
     }
@@ -89,7 +87,6 @@ class RoleController extends AbstractFOSRestController
      * @ParamConverter("role_pers",converter="fos_rest.request_body")
      */
     public function deleteRolePers(RolePers $role_pers,RolePersRepository $roleRepo){
-        dump($role_pers);
       $roleRepo->deleteRoleUser($role_pers);
         return $this->view(["roles"=> $role_pers],Response::HTTP_ACCEPTED);
     }
@@ -100,7 +97,6 @@ class RoleController extends AbstractFOSRestController
      * @ParamConverter("role_pers",converter="fos_rest.request_body")
      */
      public function deleteRolePersRole(RolePers $role_pers,RolePersRepository $roleRepo){
-        dump($role_pers);
       $roleRepo->deleteRole($role_pers);
         return $this->view(["roles"=> $role_pers],Response::HTTP_ACCEPTED);
     }

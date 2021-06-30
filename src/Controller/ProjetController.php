@@ -47,7 +47,7 @@ class ProjetController extends AbstractFOSRestController
      * @Rest\View()
      */
     public function readAll(ProjetRepository $repo){
-        return $this->view(["projets"=> $repo->findAll()]);
+        return $this->view(["projets"=> $repo->findAllbis()]);
     }
    /**
      * @Rest\Get (path="/{projet}",name="api_projet_getById")
@@ -55,7 +55,6 @@ class ProjetController extends AbstractFOSRestController
      */
     public function getProjetById(Projet $projet, ProjetRepository $repo){
         $nbrBullNull=$repo->getNbreBullNull($projet);
-        dump($nbrBullNull);
         $projet->setNbrVoteNull($nbrBullNull[0]["COUNT(*)"]);
         $nbrBullPour=$repo->getNbreBullPour($projet);
         $projet->setNbrVotePour($nbrBullPour[0]["COUNT(*)"]);
@@ -64,7 +63,8 @@ class ProjetController extends AbstractFOSRestController
         $em = $this->getDoctrine()->getManager();
         $em->persist($projet);
         $em->flush();
-        return $this->view([$repo->findOneBy(['id' => $projet->getId()])]);
+        $projet_ID=$projet->getId();
+        return $this->view($repo->findOneBybis($projet_ID));
     }
 
        /**
@@ -74,7 +74,6 @@ class ProjetController extends AbstractFOSRestController
     public function getProjetByUserId(Personne $personne, ProjetRepository $repo){
         $personne_id=$personne->getId();
         $projets=$repo->findProjetByUserRPO($personne_id);
-        dump($projets);
         return $this->view( [$projets]);
     }
 
@@ -93,11 +92,9 @@ class ProjetController extends AbstractFOSRestController
      * @Rest\Get (path="/comment/byProjetID/{projet}",name="api_projet_getComments")
      * @Rest\View()
      */
-    public function getCommentByProjet(Projet $projet, ProjetRepository $repo,CommentaireRepository $repoC){
-        // $projet_id=$projet->getId();
-        // $comments=$repo->findCommentByProjetID($projet_id);
-        $comments[]=$repoC->findBy(['projet_id' => $projet]);
-        dump($comments);
+    public function getCommentByProjet(Projet $projet,CommentaireRepository $repoC){
+        $projet_id=$projet->getId();
+        $comments=$repoC->findCommentByProjetID($projet_id);
         return $this->view(["commentaires"=>$comments]);
     }
   /**
@@ -105,11 +102,14 @@ class ProjetController extends AbstractFOSRestController
      * @Rest\View()
      * @ParamConverter("follow",converter="fos_rest.request_body")
      */
-    public function getRoleUserById(Follow $follow, FollowRepository $repo){
-        dump($follow);
+    public function getFollowUserById(Follow $follow, FollowRepository $repo){
         $followReturn=$repo->findOneBy(['projet_id'=>$follow->getProjetId(),'personne_id'=>$follow->getPersonneId()]);
-        dump($followReturn);
-        return $this->view($followReturn);
+        $bool=true;
+        if($followReturn==[])
+        {
+          $bool=false;
+        }
+        return $this->view($bool);
     }
 
     /**
@@ -117,12 +117,11 @@ class ProjetController extends AbstractFOSRestController
      * @Rest\View()
      * @ParamConverter("projet",converter="fos_rest.request_body")
      */
-    public function addProjet(Projet $projet, ProjetRepository $repo){
+    public function addProjet(Request $req, Projet $projet, ProjetRepository $repo){
+        $data = json_decode($req->getContent(), true);
+
         $projet->setCreationDate(new \DateTime("now"));
-        dump($projet);
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($projet);
-        $em->flush();
+        $repo->insert($data["titre"],$data["descriptif"],$data["personne_id_id"]);
         return $this->view(Response::HTTP_CREATED);
     }
 
@@ -150,7 +149,6 @@ class ProjetController extends AbstractFOSRestController
      */
     public function addFollow(Follow $follow){
         // $followbis=new Follow();
-         dump($follow);
         // $followbis->setPersonneId($follow->getPersonneId());
         // $followbis->setProjetId($follow->getProjetId());
         $em = $this->getDoctrine()->getManager();
@@ -167,21 +165,29 @@ class ProjetController extends AbstractFOSRestController
      * @return View
      */
     public function addComment(Request $req, CommentaireRepository $repo){
-        dump($req);
         $data = json_decode($req->getContent(), true);
         $commentaire=$data["commentaire"];
-        $personne_id=$data["personne_id"];
-        $projet_id=$data["projet_id"];
-        $repo->addCommentRepo($commentaire, $personne_id,$projet_id);
-        // $followbis=new Follow();
-        // $commentaire->setCreationDate(new \DateTime("now"));
-        //  dump($commentaire);
-        // // $followbis->setPersonneId($follow->getPersonneId());
-        // // $followbis->setProjetId($follow->getProjetId());
-        // $em = $this->getDoctrine()->getManager();
-        // $em->persist($commentaire);
-        // $em->flush();
-        // return $this->view(Response::HTTP_CREATED);
+        $personne_id=$data["personne_id_id"];
+        $projet_id=$data["projet_id_id"];
+        $commRefID=null;
+        if(isset($data["commentaire_referent_id_id"])){
+            $commRefID=$data["commentaire_referent_id_id"];
+        }
+        $repo->addCommentRepo($commentaire, $personne_id,$projet_id,$commRefID);
+    }
+
+     /**
+     * @Rest\Put("/patch/comment", name="appPAtchComment")
+     * @Rest\View()
+     * @param EntityManagerInterface $em
+     * @param Request $req
+     * @return View
+     */
+    public function updateComment(Request $req, CommentaireRepository $repo){
+        $data = json_decode($req->getContent(), true);
+        $commentaire=$data["commentaire"];
+        $id=$data["id"];
+        $repo->updateComment($commentaire, $id);
     }
 
         /**

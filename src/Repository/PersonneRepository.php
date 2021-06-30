@@ -46,13 +46,22 @@ class PersonneRepository extends ServiceEntityRepository
 
         // returns an array of arrays (i.e. a raw data set)
         $role_id=$stmt->fetchAllAssociative();
-        dump($role_id[0]["id"]);
         $role_id=$role_id[0]["id"];
         $sql = '
         INSERT INTO rolepers (personne_id,role_id) values('.$UserID.','.$role_id.');
          ';
      $stmt = $conn->prepare($sql);
      $stmt->execute();
+    }
+
+    public function findAllbis(){
+        $conn = $this->getEntityManager()->getConnection();
+        $sql='SELECT id,nom,prenom,login,email,is_active,creation_date,is_verified,nn FROM personne';
+          $stmt = $conn->prepare($sql);
+          $stmt->execute();
+  
+          // returns an array of arrays (i.e. a raw data set)
+          return $stmt->fetchAllAssociative();
     }
     // /**
     //  * @return Personne[] Returns an array of Personne objects

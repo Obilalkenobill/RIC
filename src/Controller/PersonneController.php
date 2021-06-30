@@ -52,7 +52,7 @@ class PersonneController extends AbstractFOSRestController
     public function getAll(PersonneRepository $repo)
     {
         return $this->view([
-            "Personnes"=>$repo->findAll()
+            "Personnes"=>$repo->findAllbis()
          ]);
     }
       /**
@@ -111,7 +111,6 @@ class PersonneController extends AbstractFOSRestController
        //  $personneRepo=$this->getDoctrine()->getRepository(Personne::class);
        //  $personne=$personneRepo->findOneBy(['id' => $id]);
        $test=$repoRolePers->deleteAboutUser($personne);
-       dump($test);
        $em = $this->getDoctrine()->getManager();
        $em->remove($personne);
        $em->flush(); 
@@ -145,24 +144,20 @@ class PersonneController extends AbstractFOSRestController
         // }
     //    dump($req->files->get('filephotoverif'));
        try{
-           dump($req);
        $filephotoverif=$req->files->get('filephotoverif');
        $filerectocarteid=$req->files->get('filerectocarteid');
        $fileversocarteid=$req->files->get('fileversocarteid');
        }
        catch(Exception $ex)
        {
-           dump($ex);
        }
         if( $filephotoverif!=null ){
-        dump($filephotoverif);
             $bin=file_get_contents($filephotoverif->getPathname());
             $personne->setphotoverif($bin);
             $personne->setmimeTypephotoverif($filephotoverif->getMimeType());
             $em=$this->getDoctrine()->getManager();
             $em->persist($personne);
             $em->flush();
-            dump($personne);
         }
         if( $filerectocarteid!=null ){
             $bin=file_get_contents($filerectocarteid->getPathname());

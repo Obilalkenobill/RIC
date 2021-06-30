@@ -37,11 +37,8 @@ class VoteController extends AbstractFOSRestController
         $em = $this->getDoctrine()->getManager();
         // dump("etape 1");
         // $em->persist($vote);
-        dump("etape 2");
         $em->persist($votebis);
-        dump("etape 2a",$votebis);
         $em->flush($votebis);
-        dump("etape 3");
         return $this->view(Response::HTTP_CREATED);
     }
 
@@ -50,10 +47,13 @@ class VoteController extends AbstractFOSRestController
      * @Rest\View()
      * @ParamConverter("vote",converter="fos_rest.request_body")
      */
-    public function getRoleUserById(Vote $vote){
-        $voteRepo=$this->getDoctrine()->getRepository(Vote::class);
-        $voteReturn=$voteRepo->findOneBy(['projet_id'=>$vote->getProjetId(),'personne_id'=>$vote->getPersonneId()]);
-        dump($vote);
+    public function getVoteUserById(Vote $vote, VoteRepository $voteRepo){
+        
+        $voteReturn=$voteRepo->findOneBybis($vote->getProjetId()->getId(),$vote->getPersonneId()->getId());
+        if($voteReturn===[])
+        {
+         return null;
+        }
         return $this->view($voteReturn);
     }
 }
