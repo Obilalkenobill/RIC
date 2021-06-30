@@ -84,7 +84,6 @@ class ProjetController extends AbstractFOSRestController
     public function getProjetByFollower(Personne $personne, ProjetRepository $repo){
         $personne_id=$personne->getId();
         $projets=$repo->findProjetByFollower($personne_id);
-        dump($projets);
         return $this->view( [$projets]);
     }
 
@@ -197,7 +196,9 @@ class ProjetController extends AbstractFOSRestController
      */
     public function unFollow(Follow $follow,ProjetRepository $repo){
         // $followbis=new Follow();
-        $repo->deleteFollow($follow->getProjetId()->getId(),$follow->getPersonneId()->getId());
+        $projet_id=$follow->getProjetId()->getId();
+        $personne_id=$follow->getPersonneId()->getId();
+        $repo->deleteFollow($projet_id,$personne_id);
         return $this->view(Response::HTTP_ACCEPTED);
     }
 }

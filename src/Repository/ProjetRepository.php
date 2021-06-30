@@ -106,7 +106,10 @@ class ProjetRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = 'SELECT *
-        FROM projet p INNER JOIN follow f ON p.id = f.projet_id_id WHERE f.personne_id_id='.$personne_id;
+        FROM projet p  
+        INNER JOIN Follow f  
+        ON p.id = f.projet_id_id  
+        WHERE f.personne_id_id='.$personne_id;
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         // returns an array of arrays (i.e. a raw data set)
@@ -127,7 +130,7 @@ class ProjetRepository extends ServiceEntityRepository
     public function deleteProjet($id){
 
         $conn = $this->getEntityManager()->getConnection();
-        $sql = 'DELETE FROM vote WHERE projet_id='.$id.';DELETE FROM follow WHERE projet_id_id='.$id;
+        $sql = 'DELETE FROM vote WHERE projet_id='.$id.';DELETE FROM Follow WHERE projet_id_id='.$id;
  
         $stmt = $conn->prepare($sql);
         $stmt->execute();
@@ -148,7 +151,7 @@ class ProjetRepository extends ServiceEntityRepository
     public function deleteFollow($projet_id,$personne_id){
 
         $conn = $this->getEntityManager()->getConnection();
-      $sql='DELETE FROM follow WHERE projet_id_id='.$projet_id.' AND personne_id_id='.$personne_id.';';
+      $sql='DELETE FROM Follow WHERE projet_id_id='.$projet_id.' AND personne_id_id='.$personne_id.';';
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
